@@ -1,0 +1,10 @@
+<h1>Cards</h1>
+
+<ul>
+<% @cards.each do |card|%>
+    <li>
+        <%= card.id%>
+        <%=card.name %>
+    </li>
+<%end%>
+</ul>
