@@ -1,22 +1,22 @@
-class ColumnsController < ApplicationController
+class Api::V1::CommentsController
     skip_before_action :verify_authenticity_token
 
     def index
-      @columns = Column.all
+      @comments = Comment.all
   
-      render json: @columns, status: 200
+      render json: @comments, status: 200
     end
   
     def show 
-      @column = Column.find(params[:id])
+      @comment = Comment.find(params[:id])
   
-      render json: @column, status: 200
+      render json: @comment, status: 200
     end
   
     def create
-      @column = Column.new(permit_params)
+      @comment = Comment.new(permit_params)
   
-      if @column.save
+      if @comment.save
           render json: [message: "Пользователь создан"], status: 200
       else
           render json: [erroe: "Ошибка"], status: 400
@@ -24,11 +24,11 @@ class ColumnsController < ApplicationController
     end
   
     def update
-        @column = Column.find(params[:id])
-        p @column
+        @comment = Comment.find(params[:id])
+        p @comment
         p params
         p params[:email]
-        if @column.update(permit_params)
+        if @comment.update(permit_params)
             render json: [message: "Пользователь изменен"], status: 200
         else
             render json: [error: "Ошибка"], status: 400
@@ -36,16 +36,16 @@ class ColumnsController < ApplicationController
     end
   
     def destroy
-        @column = Column.find(params[:id])
-        @column.destroy
+        @comment = Comment.find(params[:id])
+        @comment.destroy
   
-        render json: [message: "Column удалён"], status: 200
+        render json: [message: "Comment удалён"], status: 200
     end
   
     private
   
     def permit_params
         # params.require(:users).permit(:email, :password, :token_auth)
-        params.require(:column).permit(:name, :user_id)
+        params.require(:comment).permit(:card_id, :user_id, :content)
     end
 end

@@ -1,11 +1,11 @@
-class CardsController < ApplicationController
+class Api::V1::CardsController < ApplicationController
 
   skip_before_action :verify_authenticity_token
 
   def index
     @cards = Card.all
 
-    render json: @cards, status: 200
+    render json: @card, status: 200
   end
 
   def show 
