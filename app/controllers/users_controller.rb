@@ -8,6 +8,10 @@ class UsersController < ApplicationController
         render json: @users, status: 200
     end
 
+    def foo_probe
+        render json: [message: "Опа нихуя ты тут чё делаешь?)))"], status: 200
+    end
+
     def show
         @user = User.find(params[:id])
 
@@ -47,7 +51,7 @@ class UsersController < ApplicationController
 
     def permit_params
         # params.require(:users).permit(:email, :password, :token_auth)
-        params.require(:user).permit(:email, :password, :"auth_token")
+        params.require(:user).permit(:email, :password, :auth_token)
     end
 
 end

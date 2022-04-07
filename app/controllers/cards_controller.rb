@@ -1,13 +1,53 @@
 class CardsController < ApplicationController
+
+  skip_before_action :verify_authenticity_token
+
   def index
     @cards = Card.all
 
-    render json: @cards
+    render json: @cards, status: 200
   end
 
   def show 
     @card = Card.find(params[:id])
 
-    render json: @card
+    render json: @card, status: 200
   end
+
+  def create
+    @card = Card.new(permit_params)
+
+    if @card.save
+        render json: [message: "Пользователь создан"], status: 200
+    else
+        render json: [erroe: "Ошибка"], status: 400
+    end
+  end
+
+  def update
+      @card = Card.find(params[:id])
+      p @card
+      p params
+      p params[:email]
+      if @card.update(permit_params)
+          render json: [message: "Пользователь изменен"], status: 200
+      else
+          render json: [error: "Ошибка"], status: 400
+      end
+  end
+
+  def destroy
+      @card = Card.find(params[:id])
+      @card.destroy
+
+      render json: [message: "Card удалён"], status: 200
+  end
+
+  private
+
+  def permit_params
+      # params.require(:users).permit(:email, :password, :token_auth)
+      params.require(:card).permit(:name, :column_id, :user_id, :description)
+  end
+
 end
