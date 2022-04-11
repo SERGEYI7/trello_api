@@ -1,15 +1,11 @@
 class Api::V1::UsersController < ApplicationController
-
-    skip_before_action :verify_authenticity_token
+    before_action :authenticate_api_v1_user!
+    # skip_before_action :verify_authenticity_token
 
     def index
         @users = User.all
 
         render json: @users, status: 200
-    end
-
-    def foo_probe
-        render json: [message: "Опа нихуя ты тут чё делаешь?)))"], status: 200
     end
 
     def show
@@ -47,11 +43,11 @@ class Api::V1::UsersController < ApplicationController
         render json: [message: "User удалён"], status: 200
     end
 
-    private
-
-    def permit_params
-        # params.require(:users).permit(:email, :password, :token_auth)
-        params.require(:user).permit(:email, :password, :auth_token)
-    end
+    # private
+    #
+    # def permit_params
+    #     # params.require(:users).permit(:email, :password, :token_auth)
+    #     params.require(:user).permit(:email, :password, :auth_token)
+    # end
 
 end

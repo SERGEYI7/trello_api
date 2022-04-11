@@ -15,20 +15,23 @@ class Api::V1::CardsController < ApplicationController
   end
 
   def create
-    @card = Card.new(permit_params)
-
-    if @card.save
-        render json: [message: "Пользователь создан"], status: 200
-    else
-        render json: [erroe: "Ошибка"], status: 400
+    begin
+      card_create = CreateCardServices.call(
+        params[:name], 
+        params[:column_id], 
+        params[:user_id], 
+        params[:description]
+      )
+      render json: @card, status: 200
+    rescue StandartError
+      render json: {error: 'Card creation error'}, status: 404
     end
+
   end
 
   def update
       @card = Card.find(params[:id])
-      p @card
-      p params
-      p params[:email]
+
       if @card.update(permit_params)
           render json: [message: "Пользователь изменен"], status: 200
       else

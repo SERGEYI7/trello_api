@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :email, :password, :auth_token
+  attributes :id, :email, :password
 
   has_many :cards
   has_many :columns

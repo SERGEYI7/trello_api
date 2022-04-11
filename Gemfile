@@ -6,6 +6,9 @@ ruby "3.1.1"
 gem 'active_model_serializers'
 
 gem 'rubocop'
+gem 'devise'
+gem 'devise_token_auth', git: 'https://github.com/lynndylanhurley/devise_token_auth'
+gem 'omniauth'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.2", ">= 7.0.2.3"

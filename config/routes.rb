@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  # devise_for :users
   namespace :api do
     namespace :v1 do
       # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -6,6 +7,7 @@ Rails.application.routes.draw do
       # Defines the root path route ("/")
       # root "articles#index"
 
+      mount_devise_token_auth_for 'User', at: 'auth'
       resources :users do 
         resources :columns, only: [:show, :index]
         resources :cards, only: [:show, :index]
