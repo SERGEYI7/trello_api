@@ -2,43 +2,48 @@ class Api::V1::ColumnsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
-    @columns = Column.all
-    
-    render json: @columns, status: 200
+    column = Columns::GetAllColumnService.call
+    if column.success?
+      render json: column[:column], status: :ok
+    else
+      render json: {errors: column[:errors]}, status: :unprocessable_entity
+    end
   end
 
   def show 
-    @column = Column.find(params[:id])
-  
-    render json: @column, status: 200
+    column = Columns::GetColumnService.call(params[:id])
+    if column.success?
+      render json: column[:column], status: :ok
+    else
+      render json: {errors: column[:errors]}, status: :unprocessable_entity
+    end
   end
 
   def create
-    # begin
-      @column = CreateColumnServices.call(params[:name], params[:user_id])
-      render json: @column, status: 200
-    # rescue StandardError
-    #   render json: {error: 'Columns creation error'}, status: 404
-    # end
-  end
-
-  def update
-      @column = Column.find(params[:id])
-      p @column
-      p params
-      p params[:email]
-      if @column.update(permit_params)
-          render json: [message: "Пользователь изменен"], status: 200
+      column = Columns::CreateColumnService.call(params[:name], params[:user_id])
+      if column[:success?]
+        render json: column[:column], status: :ok
       else
-          render json: [error: "Ошибка"], status: 400
+        render json: {error: column[:errors]}, status: :unprocessable_entity
       end
   end
 
-  def destroy
-      @column = Column.find(params[:id])
-      @column.destroy
+  def update
+    column = Columns::UpdateColumnService.call(params[:id], params[:name], params[:user_id])
+    if column[:success?]
+      render json: column[:column], status: :ok
+    else
+      render json: {error: column[:errors]}, status: :unprocessable_entity
+    end
+  end
 
-      render json: [message: "Column удалён"], status: 200
+  def destroy
+    column = Columns::DeleteColumnService.call(params[:id])
+    if column[:success?]
+      render json: column[:column], status: :ok
+    else
+      render json: {error: column[:errors]}, status: :unprocessable_entity
+    end
   end
 
   private
