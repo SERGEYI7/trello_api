@@ -1,16 +1,20 @@
-class Comments::DeleteCommentService < ApplicationService
-  attr_reader :id
+# frozen_string_literal: true
 
-  def initialize(id)
-    @id = id
-  end
+module Comments
+  class DeleteCommentService < ApplicationService
+    attr_reader :id
 
-  def call
-    comment = Comment.find_by(id: id)
+    def initialize(id)
+      @id = id
+    end
 
-    return OpenStruct.new(success?: false, comment: nil, errors: ['Comment not found']) if comment.blank?
+    def call
+      comment = Comment.find_by(id:)
 
-    comment.destroy
-    OpenStruct.new(success?: comment.destroyed?, comment: comment, errors: comment.errors.full_messages)
+      return OpenStruct.new(success?: false, comment: nil, errors: ['Comment not found']) if comment.blank?
+
+      comment.destroy
+      OpenStruct.new(success?: comment.destroyed?, comment:, errors: comment.errors.full_messages)
+    end
   end
 end

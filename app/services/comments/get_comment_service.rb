@@ -1,15 +1,19 @@
-class Comments::GetCommentService < ApplicationService
-  attr_reader :id
+# frozen_string_literal: true
 
-  def initialize(id)
-    @id = id
-  end
+module Comments
+  class GetCommentService < ApplicationService
+    attr_reader :id
 
-  def call
-    comment = Comment.find_by(id: id)
+    def initialize(id)
+      @id = id
+    end
 
-    return OpenStruct.new(success?: false, comment: nil, errors: ['Comment not found']) if comment.blank?
+    def call
+      comment = Comment.find_by(id:)
 
-    OpenStruct.new(success?: true, comment: comment, errors: comment.errors.full_messages)
+      return OpenStruct.new(success?: false, comment: nil, errors: ['Comment not found']) if comment.blank?
+
+      OpenStruct.new(success?: true, comment:, errors: comment.errors.full_messages)
+    end
   end
 end

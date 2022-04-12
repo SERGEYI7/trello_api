@@ -1,37 +1,41 @@
-class Api::V1::CommentsController < ApplicationController
-  skip_before_action :verify_authenticity_token
+# frozen_string_literal: true
 
-    def index
-      comments = Comments::GetAllCommentsService.call
-  
-      render json: comments.comments, status: :ok
-    end
-  
-    def show 
-      comment = Comments::GetCommentService.call(params[:id])
-    
-      if comment.success?
-        render json: {data: comment.comment}, status: :ok
-      else
-        render json: {data: comment.errors}, status: :unprocessable_entity
+module Api
+  module V1
+    class CommentsController < ApplicationController
+      skip_before_action :verify_authenticity_token
+
+      def index
+        comments = Comments::GetAllCommentsService.call
+
+        render json: comments.comments, status: :ok
       end
-    end
-  
-    def create
-      comment = Comments::CreateCommentService.call(
-        params[:card_id],
-        params[:user_id],
-        params[:content]
-      )
-  
-      if comment.success?
+
+      def show
+        comment = Comments::GetCommentService.call(params[:id])
+
+        if comment.success?
+          render json: { data: comment.comment }, status: :ok
+        else
+          render json: { data: comment.errors }, status: :unprocessable_entity
+        end
+      end
+
+      def create
+        comment = Comments::CreateCommentService.call(
+          params[:card_id],
+          params[:user_id],
+          params[:content]
+        )
+
+        if comment.success?
           render json: [data: comment.comment], status: :ok
-      else
+        else
           render json: [errors: comment.errors], status: :unprocessable_entity
+        end
       end
-    end
-  
-    def update
+
+      def update
         comment = Comments::UpdateCommentService.call(
           params[:id],
           params[:card_id],
@@ -39,18 +43,20 @@ class Api::V1::CommentsController < ApplicationController
           params[:content]
         )
         if comment.success?
-            render json: [data: comment.comment], status: :ok
+          render json: [data: comment.comment], status: :ok
         else
-            render json: [errors: comment.errors], status: :unprocessable_entity
+          render json: [errors: comment.errors], status: :unprocessable_entity
         end
-    end
-  
-    def destroy
-      comment = Comments::DeleteCommentService.call(params[:id])
-      if comment.success?
-        render json: [data: comment.comment], status: :ok
-      else
-        render json: [errors: comment.errors], status: :unprocessable_entity
+      end
+
+      def destroy
+        comment = Comments::DeleteCommentService.call(params[:id])
+        if comment.success?
+          render json: [data: comment.comment], status: :ok
+        else
+          render json: [errors: comment.errors], status: :unprocessable_entity
+        end
       end
     end
+  end
 end
