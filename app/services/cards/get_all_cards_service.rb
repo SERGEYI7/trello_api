@@ -3,8 +3,8 @@
 module Cards
   class GetAllCardsService < ApplicationService
     def call
-      card = Card.first(50)
-      OpenStruct.new(card:)
+      cards = Card.first(50)
+      OpenStruct.new(cards:)
     end
   end
 end

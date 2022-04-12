@@ -3,8 +3,8 @@
 module Columns
   class GetAllColumnService < ApplicationService
     def call
-      column = Column.first(50)
-      OpenStruct.new(column:)
+      columns = Column.first(50)
+      OpenStruct.new(columns:)
     end
   end
 end

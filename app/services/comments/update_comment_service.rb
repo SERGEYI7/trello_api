@@ -12,7 +12,7 @@ module Comments
     end
 
     def call
-      comment = Comment.find(@id)
+      comment = Comment.find(id)
       success = comment.update(card_id:, user_id:, content:)
       OpenStruct.new(success?: success, comment:, errors: comment.errors.full_messages)
     end

@@ -8,7 +8,7 @@ Rails.application.routes.draw do
       # root "articles#index"
 
       mount_devise_token_auth_for 'User', at: 'auth'
-      resources :users do 
+      resources :users, only: [:show, :index] do 
         resources :columns, only: [:show, :index]
         resources :cards, only: [:show, :index]
         resources :comments, only: [:show, :index]

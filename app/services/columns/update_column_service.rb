@@ -11,8 +11,8 @@ module Columns
     end
 
     def call
-      column = Column.find(@id)
-      success = column.update(name: @name, user_id: @user_id)
+      column = Column.find(id)
+      success = column.update(name: name, user_id: user_id)
       OpenStruct.new(success?: success, column:, errors: column.errors.full_messages)
     end
   end

@@ -13,7 +13,7 @@ module Cards
     end
 
     def call
-      card = Card.find(@id)
+      card = Card.find(id)
       success = card.update(
         name:,
         user_id:,

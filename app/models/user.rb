@@ -10,8 +10,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :omniauthable # , :confirmable
   include DeviseTokenAuth::Concerns::User
-  validates :password, length: { in: 5..30 }, presennce: true
-  validates :email, format: { with: /\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b/ }, presennce: true
+  validates :password, length: { in: 5..30 }, presence: true
+  validates :email, format: { with: /\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b/ }, presence: true
   has_many :cards, dependent: :delete_all
   has_many :columns, dependent: :delete_all
   has_many :comments, dependent: :delete_all

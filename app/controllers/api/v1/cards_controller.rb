@@ -6,36 +6,36 @@ module Api
       skip_before_action :verify_authenticity_token
 
       def index
-        cards = Cards::GetAllCardsService.call
+        result = Cards::GetAllCardsService.call
 
-        render json: { data: cards.card }, status: :ok
+        render json: { data: result.cards }, status: :ok
       end
 
       def show
-        card = Cards::GetCardService.call(params[:id])
-        if card.success?
-          render json: { data: card.card }, status: :ok
+        result = Cards::GetCardService.call(params[:id])
+        if result.success?
+          render json: { data: result.card }, status: :ok
         else
-          render json: { errors: card.errors }, status: :unprocessable_entity
+          render json: { errors: result.errors }, status: :unprocessable_entity
         end
       end
 
       def create
-        card = Cards::CreateCardService.call(
+        result = Cards::CreateCardService.call(
           params[:name],
           params[:column_id],
           params[:user_id],
           params[:description]
         )
-        if card.success?
-          render json: { data: card.card }, status: :ok
+        if result.success?
+          render json: { data: result.card }, status: :ok
         else
-          render json: { errors: card.errors }, status: :unprocessable_entity
+          render json: { errors: result.errors }, status: :unprocessable_entity
         end
       end
 
       def update
-        card = Cards::UpdateCardService.call(
+        result = Cards::UpdateCardService.call(
           params[:id],
           params[:name],
           params[:column_id],
@@ -43,19 +43,19 @@ module Api
           params[:description]
         )
 
-        if card.success?
-          render json: [data: card.card], status: :ok
+        if result.success?
+          render json: {data: result.card}, status: :ok
         else
-          render json: { errors: card.errors }, status: :unprocessable_entity
+          render json: { errors: result.errors }, status: :unprocessable_entity
         end
       end
 
       def destroy
-        card = Cards::DeleteCardService.call(params[:id])
-        if card.success?
-          render json: { data: card.card }, status: :ok
+        result = Cards::DeleteCardService.call(params[:id])
+        if result.success?
+          render json: { data: result.card }, status: :ok
         else
-          render json: { errors: card.errors }, status: :unprocessable_entity
+          render json: { errors: result.errors }, status: :unprocessable_entity
         end
       end
     end
