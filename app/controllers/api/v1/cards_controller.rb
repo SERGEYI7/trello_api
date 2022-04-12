@@ -44,7 +44,7 @@ module Api
         )
 
         if result.success?
-          render json: {data: result.card}, status: :ok
+          render json: { data: result.card }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end

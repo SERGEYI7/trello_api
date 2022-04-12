@@ -15,13 +15,11 @@ module Api
       def show
         result = Users::GetUserService.call(params[:id])
         if result.success?
-          render json: result.user, status: :ok
+          render json: { data: result.user }, status: :ok
         else
-          render json: result.user, status: :unprocessable_entity
+          render json: result.errors, status: :unprocessable_entity
         end
       end
-
-      
     end
   end
 end

@@ -13,7 +13,10 @@ module Cards
     end
 
     def call
-      card = Card.find(id)
+      card = Card.find_by(id:)
+
+      return OpenStruct.new(success?: false, card: nil, errors: ['Column not found']) if card.blank?
+
       success = card.update(
         name:,
         user_id:,

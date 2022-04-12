@@ -29,9 +29,9 @@ module Api
         )
 
         if result.success?
-          render json: {data: result.comment}, status: :ok
+          render json: { data: result.comment }, status: :ok
         else
-          render json: {errors: result.errors}, status: :unprocessable_entity
+          render json: { errors: result.errors }, status: :unprocessable_entity
         end
       end
 
@@ -43,18 +43,18 @@ module Api
           params[:content]
         )
         if result.success?
-          render json: {data: result.comment}, status: :ok
+          render json: { data: result.comment }, status: :ok
         else
-          render json: {errors: result.errors}, status: :unprocessable_entity
+          render json: { errors: result.errors }, status: :unprocessable_entity
         end
       end
 
       def destroy
         result = Comments::DeleteCommentService.call(params[:id])
         if result.success?
-          render json: {data: result.comment}, status: :ok
+          render json: { data: result.comment }, status: :ok
         else
-          render json: {errors: result.errors}, status: :unprocessable_entity
+          render json: { errors: result.errors }, status: :unprocessable_entity
         end
       end
     end
