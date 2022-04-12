@@ -9,7 +9,7 @@ class Columns::UpdateColumnService < ApplicationService
 
   def call
     column = Column.find(@id)
-    column.update(name: @name, user_id: @user_id)
-    OpenStruct.new(success?: column.save, column: column, errors: column.errors.full_messages)
+    success = column.update(name: @name, user_id: @user_id)
+    OpenStruct.new(success?: success, column: column, errors: column.errors.full_messages)
   end
 end

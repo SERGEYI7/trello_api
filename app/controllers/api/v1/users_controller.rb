@@ -3,15 +3,15 @@ class Api::V1::UsersController < ApplicationController
     # skip_before_action :verify_authenticity_token
 
     def index
-        @users = User.all
+        users = User.all
 
-        render json: @users, status: 200
+        render json: users, status: 200
     end
 
     def show
-        @user = User.find(params[:id])
+        user = User.find(params[:id])
 
-        render json: @user, status: 200
+        render json: user, status: 200
     end
 
     def create

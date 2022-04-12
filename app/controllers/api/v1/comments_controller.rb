@@ -1,51 +1,56 @@
-class Api::V1::CommentsController
-    skip_before_action :verify_authenticity_token
+class Api::V1::CommentsController < ApplicationController
+  skip_before_action :verify_authenticity_token
 
     def index
-      @comments = Comment.all
+      comments = Comments::GetAllCommentsService.call
   
-      render json: @comments, status: 200
+      render json: comments.comments, status: :ok
     end
   
     def show 
-      @comment = Comment.find(params[:id])
-  
-      render json: @comment, status: 200
+      comment = Comments::GetCommentService.call(params[:id])
+    
+      if comment.success?
+        render json: {data: comment.comment}, status: :ok
+      else
+        render json: {data: comment.errors}, status: :unprocessable_entity
+      end
     end
   
     def create
-      @comment = Comment.new(permit_params)
+      comment = Comments::CreateCommentService.call(
+        params[:card_id],
+        params[:user_id],
+        params[:content]
+      )
   
-      if @comment.save
-          render json: [message: "Пользователь создан"], status: 200
+      if comment.success?
+          render json: [data: comment.comment], status: :ok
       else
-          render json: [erroe: "Ошибка"], status: 400
+          render json: [errors: comment.errors], status: :unprocessable_entity
       end
     end
   
     def update
-        @comment = Comment.find(params[:id])
-        p @comment
-        p params
-        p params[:email]
-        if @comment.update(permit_params)
-            render json: [message: "Пользователь изменен"], status: 200
+        comment = Comments::UpdateCommentService.call(
+          params[:id],
+          params[:card_id],
+          params[:user_id],
+          params[:content]
+        )
+        if comment.success?
+            render json: [data: comment.comment], status: :ok
         else
-            render json: [error: "Ошибка"], status: 400
+            render json: [errors: comment.errors], status: :unprocessable_entity
         end
     end
   
     def destroy
-        @comment = Comment.find(params[:id])
-        @comment.destroy
-  
-        render json: [message: "Comment удалён"], status: 200
-    end
-  
-    private
-  
-    def permit_params
-        # params.require(:users).permit(:email, :password, :token_auth)
-        params.require(:comment).permit(:card_id, :user_id, :content)
+      comment = Comments::DeleteCommentService.call(params[:id])
+      if comment.success?
+        render json: [data: comment.comment], status: :ok
+      else
+        render json: [errors: comment.errors], status: :unprocessable_entity
+      end
     end
 end

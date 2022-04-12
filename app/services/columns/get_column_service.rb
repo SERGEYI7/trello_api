@@ -6,11 +6,10 @@ class Columns::GetColumnService < ApplicationService
   end
 
   def call
-    column = Column.find(@id)
-    success = true
-  rescue => errors
-    succes = false
-  ensure
-    return OpenStruct.new(success?: success, column: column, errors: errors)
+    column = Column.find_by(id: id)
+
+    return OpenStruct.new(success?: false, column: nil, errors: ['Column not found']) if column.blank?
+
+    OpenStruct.new(success?: true, column: column, errors: column.errors.full_messages)
   end
 end
