@@ -6,18 +6,22 @@ module Api
 
       def index
         result = Users::GetAllUsersService.call
-        serialized_result = ActiveModelSerializers::SerializableResource.new(result.users, serializer: UserSerializer)
-        render json: serialized_result, status: :ok
+        render json: {data: simple_serializer(result.users)}, status: :ok
       end
 
       def show
         result = Users::GetUserService.call(params[:id])
         if result.success?
-          serialized_result = ActiveModelSerializers::SerializableResource.new(result.user, serializer: UserSerializer)
-          render json: { data: serialized_result }, status: :ok
+          render json: { data: simple_serializer(result.user) }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
+      end
+
+      private
+
+      def simple_serializer(content)
+        ActiveModelSerializers::SerializableResource.new(content, each_serializer: UserSerializer)
       end
     end
   end

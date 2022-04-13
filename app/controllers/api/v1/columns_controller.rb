@@ -3,20 +3,17 @@
 module Api
   module V1
     class ColumnsController < ApplicationController
-      skip_before_action :verify_authenticity_token
+      before_action :authenticate_user!
 
       def index
         result = Columns::GetAllColumnsService.call(user_params[:user_id])
-        serialized_result = ActiveModelSerializers::SerializableResource.new(result.columns, each_serializer: ColumnSerializer)
-        # serialized_result = result.columns
-        render json: { data: serialized_result }, status: :ok
+        render json: { data: simple_serializer(result.columns) }, status: :ok
       end
 
       def show
         result = Columns::GetColumnService.call(params[:id], user_params[:user_id])
         if result.success?
-          serialized_result = ActiveModelSerializers::SerializableResource.new(result.column, serializer: ColumnSerializer)
-          render json: { data: serialized_result }, status: :ok
+          render json: { data: simple_serializer(result.column) }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -25,8 +22,7 @@ module Api
       def create
         result = Columns::CreateColumnService.call(params[:name], params[:user_id])
         if result.success?
-          serialized_result = ActiveModelSerializers::SerializableResource.new(result.column, serializer: ColumnSerializer)
-          render json: { data: serialized_result }, status: :ok
+          render json: { data: simple_serializer(result.column) }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -35,8 +31,7 @@ module Api
       def update
         result = Columns::UpdateColumnService.call(params[:id], params[:name], params[:user_id])
         if result.success?
-          serialized_result = ActiveModelSerializers::SerializableResource.new(result.column, serializer: ColumnSerializer)
-          render json: { data: serialized_result }, status: :ok
+          render json: { data: simple_serializer(result.column) }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -45,8 +40,7 @@ module Api
       def destroy
         result = Columns::DeleteColumnService.call(params[:id])
         if result.success?
-          serialized_result = ActiveModelSerializers::SerializableResource.new(result.column, serializer: ColumnSerializer)
-          render json: { data: serialized_result }, status: :ok
+          render json: { data: simple_serializer(result.column) }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -56,6 +50,10 @@ module Api
 
       def user_params
         params.permit(:user_id)
+      end
+
+      def simple_serializer(content)
+        ActiveModelSerializers::SerializableResource.new(content, each_serializer: ColumnSerializer)
       end
     end
   end
