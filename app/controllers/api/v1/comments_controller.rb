@@ -6,13 +6,13 @@ module Api
       skip_before_action :verify_authenticity_token
 
       def index
-        result = Comments::GetAllCommentsService.call
+        result = Comments::GetAllCommentsService.call(current_user&.id, column_params[:column_id], card_params[:card_id])
 
         render json: result.comments, status: :ok
       end
 
       def show
-        result = Comments::GetCommentService.call(params[:id])
+        result = Comments::GetCommentService.call(params[:id], current_user&.id, column_params[:column_id], card_params[:card_id])
 
         if result.success?
           render json: { data: result.comment }, status: :ok
@@ -57,6 +57,21 @@ module Api
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
       end
+
+      private
+
+      def column_params
+        params.permit(:column_id)
+      end
+
+      def card_params
+        params.permit(:card_id)
+      end
+
+      def user_params
+        params.permit(:user_id)
+      end
+
     end
   end
 end

@@ -12,6 +12,8 @@ module Cards
     end
 
     def call
+      p user_id
+      p column_id
       card = Card.new(name:, user_id:, column_id:, description:)
       OpenStruct.new(success?: card.save, card:, errors: card.errors.full_messages)
     end

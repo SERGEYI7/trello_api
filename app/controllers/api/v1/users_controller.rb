@@ -8,7 +8,7 @@ module Api
 
       def index
         result = Users::GetAllUsersService.call
-
+        p "#{current_user.uid}"
         render json: result.users, status: :ok
       end
 

@@ -14,12 +14,13 @@ Rails.application.routes.draw do
         resources :comments, only: [:show, :index]
       end
 
-      resources :columns
+
       resources :columns do
-        resources :cards, only: [:show, :index]
+        resources :cards, only: [:show, :index] do
+          resources :comments, only: [:show, :index]
+        end
       end
 
-      resources :cards
       resources :cards do
         resources :comments, only: [:show, :index]
       end

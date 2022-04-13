@@ -2,18 +2,26 @@
 
 module Cards
   class GetCardService < ApplicationService
-    attr_reader :id
+    attr_reader :id, :user_id, :column_id
 
-    def initialize(id)
+    def initialize(id, user_id, column_id)
       @id = id
+      @user_id = user_id
+      @column_id = column_id
     end
 
     def call
-      card = Card.find_by(id:)
+      p user_id
+      p column_id
 
-      return OpenStruct.new(success?: false, card: nil, errors: ['Column not found']) if card.blank?
+      card ||= Card.where(user_id: user_id, column_id: column_id, id: id).first(50) if (user_id.present? && column_id.present?)
+      card ||= Card.where(user_id: user_id, id: id).first(50) if user_id.present?
+      card ||= Card.where(column_id: column_id, id: id).first(50) if column_id.present?
+      card ||= Card.find_by(id:)
 
-      OpenStruct.new(success?: true, card:, errors: card.errors.full_messages)
+      return OpenStruct.new(success?: false, card: nil, errors: ['Card not found']) if card.blank?
+
+      OpenStruct.new(success?: true, card:, errors: nil)
     end
   end
 end
