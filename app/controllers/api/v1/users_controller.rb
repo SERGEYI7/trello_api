@@ -3,19 +3,18 @@
 module Api
   module V1
     class UsersController < ApplicationController
-      before_action :authenticate_api_v1_user!
-      # skip_before_action :verify_authenticity_token
 
       def index
         result = Users::GetAllUsersService.call
-        p "#{current_user.uid}"
-        render json: result.users, status: :ok
+        serialized_result = ActiveModelSerializers::SerializableResource.new(result.users, serializer: UserSerializer)
+        render json: serialized_result, status: :ok
       end
 
       def show
         result = Users::GetUserService.call(params[:id])
         if result.success?
-          render json: { data: result.user }, status: :ok
+          serialized_result = ActiveModelSerializers::SerializableResource.new(result.user, serializer: UserSerializer)
+          render json: { data: serialized_result }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end

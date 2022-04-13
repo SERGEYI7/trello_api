@@ -6,16 +6,17 @@ module Api
       skip_before_action :verify_authenticity_token
 
       def index
-        result = Comments::GetAllCommentsService.call(current_user&.id, column_params[:column_id], card_params[:card_id])
-
-        render json: result.comments, status: :ok
+        result = Comments::GetAllCommentsService.call(user_params[:user_id], card_params[:card_id])
+        serialized_result = ActiveModelSerializers::SerializableResource.new(result.comments, serializer: CommentSerializer)
+        render json: serialized_result, status: :ok
       end
 
       def show
-        result = Comments::GetCommentService.call(params[:id], current_user&.id, column_params[:column_id], card_params[:card_id])
-
+        result = Comments::GetCommentService.call(params[:id], user_params[:user_id], card_params[:card_id])
+        p result.comments.class
         if result.success?
-          render json: { data: result.comment }, status: :ok
+          serialized_result = ActiveModelSerializers::SerializableResource.new(result.comment, serializer: CommentSerializer)
+          render json: { data: serialized_result }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -29,7 +30,8 @@ module Api
         )
 
         if result.success?
-          render json: { data: result.comment }, status: :ok
+          serialized_result = ActiveModelSerializers::SerializableResource.new(result.comment, serializer: CommentSerializer)
+          render json: { data: serialized_result }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -43,7 +45,8 @@ module Api
           params[:content]
         )
         if result.success?
-          render json: { data: result.comment }, status: :ok
+          serialized_result = ActiveModelSerializers::SerializableResource.new(result.comment, serializer: CommentSerializer)
+          render json: { data: serialized_result }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -52,17 +55,14 @@ module Api
       def destroy
         result = Comments::DeleteCommentService.call(params[:id])
         if result.success?
-          render json: { data: result.comment }, status: :ok
+          serialized_result = ActiveModelSerializers::SerializableResource.new(result.comment, serializer: CommentSerializer)
+          render json: { data: serialized_result }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
       end
 
       private
-
-      def column_params
-        params.permit(:column_id)
-      end
 
       def card_params
         params.permit(:card_id)

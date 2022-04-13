@@ -4,17 +4,19 @@ module Api
   module V1
     class CardsController < ApplicationController
       skip_before_action :verify_authenticity_token
+      before_action :authenticate_user!
 
       def index
-        result = Cards::GetAllCardsService.call(current_user&.id, column_params[:column_id])
-
-        render json: { data: result.cards }, status: :ok
+        result = Cards::GetAllCardsService.call(user_params[:user_id], column_params[:column_id])
+        serialized_result = ActiveModelSerializers::SerializableResource.new(result.card, serializer: CardSerializer)
+        render json: { data: serialized_result }, status: :ok
       end
 
       def show
-        result = Cards::GetCardService.call(params[:id], current_user&.id, column_params[:column_id])
+        result = Cards::GetCardService.call(params[:id], user_params[:user_id], column_params[:column_id])
         if result.success?
-          render json: { data: result.card }, status: :ok
+          serialized_result = ActiveModelSerializers::SerializableResource.new(result.card, serializer: CardSerializer)
+          render json: { data: serialized_result }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -28,7 +30,8 @@ module Api
           params[:description]
         )
         if result.success?
-          render json: { data: result.card }, status: :ok
+          serialized_result = ActiveModelSerializers::SerializableResource.new(result.card, serializer: CardSerializer)
+          render json: { data: serialized_result }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -44,7 +47,8 @@ module Api
         )
 
         if result.success?
-          render json: { data: result.card }, status: :ok
+          serialized_result = ActiveModelSerializers::SerializableResource.new(result.card, serializer: CardSerializer)
+          render json: { data: serialized_result }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -53,7 +57,8 @@ module Api
       def destroy
         result = Cards::DeleteCardService.call(params[:id])
         if result.success?
-          render json: { data: result.card }, status: :ok
+          serialized_result = ActiveModelSerializers::SerializableResource.new(result.card, serializer: CardSerializer)
+          render json: { data: serialized_result }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end

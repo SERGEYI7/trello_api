@@ -14,18 +14,19 @@ Rails.application.routes.draw do
         resources :comments, only: [:show, :index]
       end
 
+      resources :columns, only: [:update, :create, :destroy]
 
-      resources :columns do
-        resources :cards, only: [:show, :index] do
-          resources :comments, only: [:show, :index]
-        end
+      resources :columns, only: [:show, :index] do
+        resources :cards, only: [:show, :index]
       end
 
-      resources :cards do
+      resources :cards, only: [:update, :create, :destroy]
+
+      resources :cards, only: [:show, :index] do
         resources :comments, only: [:show, :index]
       end
-      resources :comments
 
+      resources :comments
     end
   end
 end

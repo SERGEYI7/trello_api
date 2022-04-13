@@ -11,10 +11,6 @@ module Cards
     end
 
     def call
-      p user_id
-      p column_id
-
-      card ||= Card.where(user_id: user_id, column_id: column_id, id: id).first(50) if (user_id.present? && column_id.present?)
       card ||= Card.where(user_id: user_id, id: id).first(50) if user_id.present?
       card ||= Card.where(column_id: column_id, id: id).first(50) if column_id.present?
       card ||= Card.find_by(id:)
