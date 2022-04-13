@@ -7,7 +7,7 @@ module Api
 
       def index
         result = Comments::GetAllCommentsService.call(user_params[:user_id], card_params[:card_id])
-        render json: {data: simple_serializer(result.comments)}, status: :ok
+        render json: { data: simple_serializer(result.comments) }, status: :ok
       end
 
       def show

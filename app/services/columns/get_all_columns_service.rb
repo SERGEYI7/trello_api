@@ -9,8 +9,8 @@ module Columns
     end
 
     def call
-        columns ||= Column.where(user_id: user_id).first(50) if user_id.present?
-        columns ||= Column.first(50)
+      columns ||= Column.where(user_id:).first(50) if user_id.present?
+      columns ||= Column.first(50)
       OpenStruct.new(columns:)
     end
   end

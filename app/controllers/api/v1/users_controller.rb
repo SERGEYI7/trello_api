@@ -3,10 +3,9 @@
 module Api
   module V1
     class UsersController < ApplicationController
-
       def index
         result = Users::GetAllUsersService.call
-        render json: {data: simple_serializer(result.users)}, status: :ok
+        render json: { data: simple_serializer(result.users) }, status: :ok
       end
 
       def show
