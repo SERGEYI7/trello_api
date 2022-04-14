@@ -11,13 +11,18 @@ module Cards
     end
 
     def call
-      card ||= Card.where(user_id:, id:).first(50) if user_id.present?
-      card ||= Card.where(column_id:, id:).first(50) if column_id.present?
-      card ||= Card.find_by(id:)
+      return OpenStruct.new(success?: false, card: nil, errors: ['Card not found']) if find_card.blank?
 
-      return OpenStruct.new(success?: false, card: nil, errors: ['Card not found']) if card.blank?
+      OpenStruct.new(success?: true, card: find_card, errors: nil)
+    end
 
-      OpenStruct.new(success?: true, card:, errors: nil)
+    private
+
+    def find_card
+      return Card.find_by(user_id:, id:) if user_id.present?
+      return Card.find_by(column_id:, id:) if column_id.present?
+
+      Card.find_by(id:)
     end
   end
 end

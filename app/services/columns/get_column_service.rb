@@ -10,12 +10,17 @@ module Columns
     end
 
     def call
-      column ||= Column.where(user_id:, id:) if user_id.present?
-      column ||= Column.find_by(id:)
+      return OpenStruct.new(success?: false, column: nil, errors: ['Column not found']) if find_column.blank?
 
-      return OpenStruct.new(success?: false, column: nil, errors: ['Column not found']) if column.blank?
+      OpenStruct.new(success?: true, column: find_column, errors: nil)
+    end
 
-      OpenStruct.new(success?: true, column:, errors: nil)
+    private
+
+    def find_column
+      return Column.find_by(user_id:, id:) if user_id.present?
+
+      Column.find_by(id:)
     end
   end
 end

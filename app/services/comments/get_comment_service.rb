@@ -11,14 +11,16 @@ module Comments
     end
 
     def call
-      comment ||= Comment.where(user_id:, id:).first(50) if user_id.present?
-      comment ||= Comment.where(card_id:, id:).first(50) if card_id.present?
+      return OpenStruct.new(success?: false, comment: nil, errors: ['Comment not found']) if find_comment.blank?
 
-      comment ||= Comment.find_by(id:)
+      OpenStruct.new(success?: true, comment: find_comment, errors: nil)
+    end
 
-      return OpenStruct.new(success?: false, comment: nil, errors: ['Comment not found']) if comment.blank?
+    def find_comment
+      return Comment.find_by(user_id:, id:) if user_id.present?
+      return Comment.find_by(card_id:, id:) if card_id.present?
 
-      OpenStruct.new(success?: true, comment:, errors: nil)
+      Comment.find_by(id:)
     end
   end
 end

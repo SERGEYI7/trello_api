@@ -3,17 +3,17 @@
 module Api
   module V1
     class ColumnsController < ApplicationController
-      before_action :authenticate_user!
+      # before_action :authenticate_user!
 
       def index
         result = Columns::GetAllColumnsService.call(user_params[:user_id])
-        render json: { data: simple_serializer(result.columns) }, status: :ok
+        render json: { data: serializer_columns(result.columns) }, status: :ok
       end
 
       def show
         result = Columns::GetColumnService.call(params[:id], user_params[:user_id])
         if result.success?
-          render json: { data: simple_serializer(result.column) }, status: :ok
+          render json: { data: serializer_column(result.column) }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -22,7 +22,7 @@ module Api
       def create
         result = Columns::CreateColumnService.call(params[:name], params[:user_id])
         if result.success?
-          render json: { data: simple_serializer(result.column) }, status: :ok
+          render json: { data: serializer_column(result.column) }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -31,7 +31,7 @@ module Api
       def update
         result = Columns::UpdateColumnService.call(params[:id], params[:name], params[:user_id])
         if result.success?
-          render json: { data: simple_serializer(result.column) }, status: :ok
+          render json: { data: serializer_column(result.column) }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -40,7 +40,7 @@ module Api
       def destroy
         result = Columns::DeleteColumnService.call(params[:id])
         if result.success?
-          render json: { data: simple_serializer(result.column) }, status: :ok
+          render json: { data: serializer_column(result.column) }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -52,8 +52,12 @@ module Api
         params.permit(:user_id)
       end
 
-      def simple_serializer(content)
+      def serializer_columns(content)
         ActiveModelSerializers::SerializableResource.new(content, each_serializer: ColumnSerializer)
+      end
+
+      def serializer_column(content)
+        ActiveModelSerializers::SerializableResource.new(content, serializer: ColumnSerializer)
       end
     end
   end

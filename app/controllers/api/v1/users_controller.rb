@@ -5,13 +5,13 @@ module Api
     class UsersController < ApplicationController
       def index
         result = Users::GetAllUsersService.call
-        render json: { data: simple_serializer(result.users) }, status: :ok
+        render json: { data: serializer_users(result.users) }, status: :ok
       end
 
       def show
         result = Users::GetUserService.call(params[:id])
         if result.success?
-          render json: { data: simple_serializer(result.user) }, status: :ok
+          render json: { data: serializer_user(result.user) }, status: :ok
         else
           render json: { errors: result.errors }, status: :unprocessable_entity
         end
@@ -19,8 +19,12 @@ module Api
 
       private
 
-      def simple_serializer(content)
+      def serializer_users(content)
         ActiveModelSerializers::SerializableResource.new(content, each_serializer: UserSerializer)
+      end
+
+      def serializer_user(content)
+        ActiveModelSerializers::SerializableResource.new(content, serializer: UserSerializer)
       end
     end
   end
